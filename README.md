@@ -5,7 +5,7 @@ A PHP implementation of node.js socket.io-emitter.
 ## Installation
 
 ```bash
-composer require goez/socket.io-php-emitter
+composer require fantik11/socket.io-php-emitter
 ```
 
 ## Usage
