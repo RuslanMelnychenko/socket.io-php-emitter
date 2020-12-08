@@ -1,5 +1,5 @@
 {
-  "name": "goez/socket.io-php-emitter",
+  "name": "fantik11/socket.io-php-emitter",
   "description": "PHP socket.io event emitter",
   "authors": [
     {
