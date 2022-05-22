@@ -1,22 +1,22 @@
-# goez/socket.io-php-emitter [![Build Status](https://travis-ci.org/goez-tools/socket.io-php-emitter.svg?branch=master)](https://travis-ci.org/goez-tools/socket.io-php-emitter)
+# ruslanmelnychenko/socket.io-php-emitter [![Build Status](https://travis-ci.org/ruslanmelnychenko/socket.io-php-emitter.svg?branch=master)](https://travis-ci.org/ruslanmelnychenko/socket.io-php-emitter)
 
 A PHP implementation of node.js socket.io-emitter.
+Use PhpRedis client.
 
 ## Installation
 
 ```bash
-composer require fantik11/socket.io-php-emitter
+composer require ruslanmelnychenko/socket.io-php-emitter
 ```
 
 ## Usage
 
 ### Emit payload message
 ```php
-use Predis\Client;
-use Goez\SocketIO\Emitter;
+use RuslanMelnychenko\SocketIO\Emitter;
 ...
 
-$client = new Client();
+$client = new \Redis();
 
 (new Emitter($client))
     ->of('namespace')->emit('event', 'payload message');
@@ -30,11 +30,11 @@ Possible flags
 
 #### To use flags, just call it like in examples bellow
 ```php
-use Predis\Client;
-use Goez\SocketIO\Emitter;
+use RuslanMelnychenko\SocketIO\Emitter;
 ...
 
-$client = new Client();
+$client = new \Redis();
+$client->connect('127.0.0.1');
 
 (new Emitter($client))
     ->broadcast->emit('broadcast-event', 'payload message');
@@ -45,11 +45,11 @@ $client = new Client();
 
 ### Emit an object
 ```php
-use Predis\Client;
-use Goez\SocketIO\Emitter;
+use RuslanMelnychenko\SocketIO\Emitter;
 ...
 
-$client = new Client();
+$client = new \Redis();
+$client->connect('127.0.0.1');
 
 (new Emitter($client))
     ->emit('broadcast-event', ['param1' => 'value1', 'param2' => 'value2', ]);
@@ -57,20 +57,57 @@ $client = new Client();
 
 ### Emit an object in multiple rooms
 ```php
-use Predis\Client;
-use Goez\SocketIO\Emitter;
+use RuslanMelnychenko\SocketIO\Emitter;
 ...
 
-$client = new Client();
+$client = new \Redis();
+$client->connect('127.0.0.1');
 
 (new Emitter($client))
     ->in(['room1', 'room2'])
     ->emit('broadcast-event', ['param1' => 'value1', 'param2' => 'value2', ]);
 ```
 
+### Emit an object in multiple rooms with except rooms
+```php
+use RuslanMelnychenko\SocketIO\Emitter;
+...
+
+$client = new \Redis();
+$client->connect('127.0.0.1');
+
+(new Emitter($client))
+    ->in(['room1', 'room2'])
+    ->except(['room3'])
+    ->emit('broadcast-event', ['param1' => 'value1', 'param2' => 'value2', ]);
+```
+
+### Send remote commands
+```php
+use RuslanMelnychenko\SocketIO\Emitter;
+...
+
+$client = new \Redis();
+$client->connect('127.0.0.1');
+
+(new Emitter($client))
+    ->in(['room1', 'room2'])
+    ->except(['room3'])
+    ->socketsJoin('room4');
+    
+(new Emitter($client))
+    ->in(['room4'])
+    ->socketsLeave('room3');
+    
+(new Emitter($client))
+    ->in(['room1'])
+    ->disconnectSockets();
+
+(new Emitter($client))
+    ->of('/tasks')
+    ->serverSideEmit('taskDone', 1);
+```
+
 ## Credits
 
-This library is forked from [shakahl/socket.io-emitter](https://github.com/shakahl/socket.io-emitter) created by Soma Szélpál.
-
-The [shakahl/socket.io-emitter](https://github.com/shakahl/socket.io-emitter) is forked from [exls/socket.io-emitter](https://github.com/exls/socket.io-emitter) created by Anton Pavlov.
-
+[Watch all forks](https://github.com/RuslanMelnychenko/socket.io-php-emitter/network/members)
