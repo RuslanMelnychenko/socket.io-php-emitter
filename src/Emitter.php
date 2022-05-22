@@ -315,9 +315,9 @@ class Emitter
      *
      * @param string $event
      * @param scalar|array|object ...$args
-     * @return void
+     * @return $this
      */
-    public function serverSideEmit(string $event, ...$args)
+    public function serverSideEmit(string $event, ...$args): self
     {
         $message = [
             'uid' => $this->uid,
@@ -325,6 +325,7 @@ class Emitter
             'data' => array_merge([$event], $args)
         ];
         $this->emitToServer($message);
+        return $this;
     }
 
     /**
