@@ -74,6 +74,12 @@ class Emitter
     protected $rooms;
 
     /**
+     * Except rooms
+     * @var array
+     */
+    protected $exceptRooms;
+
+    /**
      * @var array
      */
     protected $validFlags = [];
@@ -153,6 +159,29 @@ class Emitter
     }
 
     /**
+     *
+     * Except rooms
+     *
+     * @param string|string[] $room
+     * @return $this
+     */
+    public function except($room): self
+    {
+        //multiple
+        if (is_array($room)) {
+            foreach ($room as $r) {
+                $this->except($r);
+            }
+            return $this;
+        }
+        //single
+        if (!in_array($room, $this->exceptRooms, true)) {
+            $this->exceptRooms[] = $room;
+        }
+        return $this;
+    }
+
+    /**
      * Set a namespace
      *
      * @param  string $namespace
@@ -222,6 +251,7 @@ class Emitter
 
         $options = [
             'rooms' => $this->rooms,
+            'except' => $this->exceptRooms,
             'flags' => $this->flags,
         ];
         $channelName = sprintf('%s#%s#', $this->prefix, $packet['nsp']);
@@ -260,6 +290,7 @@ class Emitter
     protected function reset()
     {
         $this->rooms = [];
+        $this->exceptRooms = [];
         $this->flags = [];
         $this->namespace = self::DEFAULT_NAMESPACE;
         $this->type = self::EVENT_TYPE_REGULAR;
