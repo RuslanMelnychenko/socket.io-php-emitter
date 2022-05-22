@@ -2,21 +2,20 @@
 
 namespace Tests;
 
-use Goez\SocketIO\Emitter;
+use RuslanMelnychenko\SocketIO\Emitter;
 use Mockery;
 use Mockery\MockInterface;
-use Predis\Client;
 
 class EmitterTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var MockInterface|Client
+     * @var MockInterface|\Redis
      */
     private $mockClient;
 
     protected function setUp()
     {
-        $this->mockClient = Mockery::spy(Client::class);
+        $this->mockClient = Mockery::spy(\Redis::class);
     }
 
     protected function tearDown()
