@@ -298,9 +298,7 @@ class Emitter
         } else {
             $this->client->publish($channelName, $message);
         }
-
-        // reset state
-        return $this->reset();
+        return $this;
     }
 
     protected function emitToServer(array $request)
@@ -391,7 +389,7 @@ class Emitter
      * Reset all values
      * @return $this
      */
-    protected function reset()
+    public function reset(): self
     {
         $this->rooms = [];
         $this->exceptRooms = [];
