@@ -10,7 +10,6 @@
 namespace Goez\SocketIO;
 
 use MessagePack\Packer;
-use Predis;
 
 /**
  * Class Emitter
@@ -90,7 +89,7 @@ class Emitter
     protected $packer;
 
     /**
-     * @var Predis\Client
+     * @var \Redis
      */
     protected $client;
 
@@ -102,11 +101,11 @@ class Emitter
     /**
      * Emitter constructor.
      *
-     * @param Predis\Client $client
+     * @param \Redis $client
      * @param string $prefix
      * @throws \InvalidArgumentException
      */
-    public function __construct(Predis\Client $client, $prefix = 'socket.io')
+    public function __construct(\Redis $client, $prefix = 'socket.io')
     {
         $this->client = $client;
         $this->prefix = $prefix;
