@@ -31,6 +31,26 @@ class Emitter
     const EVENT_TYPE_BINARY = 5;
 
     /**
+     * @var int
+     */
+    const REQUEST_REMOTE_JOIN = 2;
+
+    /**
+     * @var int
+     */
+    const REQUEST_REMOTE_LEAVE = 3;
+
+    /**
+     * @var int
+     */
+    const REQUEST_REMOTE_DISCONNECT = 4;
+
+    /**
+     * @var int
+     */
+    const REQUEST_SERVER_SIDE_EMIT = 6;
+
+    /**
      * @var
      */
     const FLAG_JSON = 'json';
@@ -281,6 +301,90 @@ class Emitter
 
         // reset state
         return $this->reset();
+    }
+
+    protected function emitToServer(array $request)
+    {
+        $channelName = sprintf('%s-request#%s#', $this->prefix, $this->namespace);
+        $request = json_encode($request);
+        $this->client->publish($channelName, $request);
+    }
+
+    /**
+     * Send a packet to the Socket.IO servers in the cluster
+     *
+     * @param string $event
+     * @param scalar|array|object ...$args
+     * @return void
+     */
+    public function serverSideEmit(string $event, ...$args)
+    {
+        $message = [
+            'uid' => $this->uid,
+            'type' => self::REQUEST_SERVER_SIDE_EMIT,
+            'data' => array_merge([$event], $args)
+        ];
+        $this->emitToServer($message);
+    }
+
+    /**
+     * Makes the matching socket instances join the specified rooms
+     *
+     * @param string|string[] $rooms
+     * @return $this
+     */
+    public function socketsJoin($rooms): self
+    {
+        $message = [
+            'type' => self::REQUEST_REMOTE_JOIN,
+            'opts' => [
+                'rooms' => $this->rooms,
+                'except' => $this->exceptRooms,
+            ],
+            'rooms' => is_array($rooms) ? $rooms : [$rooms],
+        ];
+        $this->emitToServer($message);
+        return $this;
+    }
+
+    /**
+     * Makes the matching socket instances leave the specified rooms
+     *
+     * @param string|string[] $rooms
+     * @return $this
+     */
+    public function socketsLeave($rooms): self
+    {
+        $message = [
+            'type' => self::REQUEST_REMOTE_LEAVE,
+            'opts' => [
+                'rooms' => $this->rooms,
+                'except' => $this->exceptRooms,
+            ],
+            'rooms' => is_array($rooms) ? $rooms : [$rooms],
+        ];
+        $this->emitToServer($message);
+        return $this;
+    }
+
+    /**
+     * Makes the matching socket instances disconnect
+     *
+     * @param bool $close whether to close the underlying connection
+     * @return $this
+     */
+    public function disconnectSockets(bool $close = false): self
+    {
+        $message = [
+            'type' => self::REQUEST_REMOTE_DISCONNECT,
+            'opts' => [
+                'rooms' => $this->rooms,
+                'except' => $this->exceptRooms,
+            ],
+            'close' => $close,
+        ];
+        $this->emitToServer($message);
+        return $this;
     }
 
     /**
