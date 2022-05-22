@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * @author Ruslan Melnychenko <ruslan.meln@gmail.com>
  * @author Jace Ju <jaceju@gmail.com>
  * @author Soma Szélpál <szelpalsoma@gmail.com>
  * @author Anton Pavlov <anton.pavlov.it@gmail.com>
@@ -148,10 +149,10 @@ class Emitter
     /**
      * Set room
      *
-     * @param  string|array $room
+     * @param string|string[] $room
      * @return $this
      */
-    public function in($room)
+    public function in($room): self
     {
         //multiple
         if (is_array($room)) {
@@ -170,10 +171,10 @@ class Emitter
     /**
      * Alias for in
      *
-     * @param  string $room
+     * @param string|string[] $room
      * @return $this
      */
-    public function to($room)
+    public function to($room): self
     {
         return $this->in($room);
     }
@@ -204,10 +205,10 @@ class Emitter
     /**
      * Set a namespace
      *
-     * @param  string $namespace
+     * @param string $namespace
      * @return $this
      */
-    public function of($namespace)
+    public function of(string $namespace): self
     {
         $this->namespace = $namespace;
         return $this;
@@ -216,11 +217,11 @@ class Emitter
     /**
      * Set flags with magic method
      *
-     * @param  string $flag
+     * @param string $flag
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function __get($flag)
+    public function __get(string $flag)
     {
         return $this->flag($flag);
     }
@@ -228,11 +229,10 @@ class Emitter
     /**
      * Set flags
      *
-     * @param  string $flag
+     * @param string $flag
      * @return $this
-     * @throws \InvalidArgumentException
      */
-    public function flag($flag = null)
+    public function flag(string $flag): self
     {
         if (!in_array($flag, $this->validFlags, true)) {
             throw new \InvalidArgumentException('Invalid socket.io flag used: ' . $flag);
@@ -246,10 +246,10 @@ class Emitter
     /**
      * Set type
      *
-     * @param  int $type
+     * @param int $type
      * @return $this
      */
-    public function type($type = self::EVENT_TYPE_REGULAR)
+    public function type($type = self::EVENT_TYPE_REGULAR): self
     {
         $this->type = $type;
 
@@ -259,13 +259,15 @@ class Emitter
     /**
      * Emitting
      *
+     * @param string $event Event name
+     * @param scalar|array|object ...$args
      * @return $this
      */
-    public function emit()
+    public function emit(string $event, ...$args): self
     {
         $packet = [
             'type' => $this->type,
-            'data' => func_get_args(),
+            'data' => array_merge([$event], $args),
             'nsp' => $this->namespace,
         ];
 
