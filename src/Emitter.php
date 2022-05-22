@@ -8,13 +8,13 @@
  * @license MIT
  */
 
-namespace Goez\SocketIO;
+namespace RuslanMelnychenko\SocketIO;
 
 use MessagePack\Packer;
 
 /**
  * Class Emitter
- * @package Goez\SocketIO
+ * @package RuslanMelnychenko\SocketIO
  * @property-read Emitter $json
  * @property-read Emitter $volatile
  * @property-read Emitter $broadcast

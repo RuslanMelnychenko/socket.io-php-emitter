@@ -1,7 +1,7 @@
 {
-  "name": "fantik11/socket.io-php-emitter",
-  "description": "PHP socket.io event emitter",
-  "version": "0.1.3",
+  "name": "ruslanmelnychenko/socket.io-php-emitter",
+  "description": "PHP socket.io event emitter (PhpRedis)",
+  "version": "1.0.0",
   "authors": [
     {
       "name": "Jace Ju",
@@ -29,7 +29,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Goez\\SocketIO\\": "src/"
+      "RuslanMelnychenko\\SocketIO\\": "src/"
     }
   },
   "autoload-dev": {
